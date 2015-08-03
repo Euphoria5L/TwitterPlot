@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><title>Main</title></head>
+<body>
+    <h1>Select your plotting options</h1>
+    <form action="{{ url_for('plot_data') }}" method="POST" class=plot-data>
+        <dl>
+            <dt>Chart Title
+            <dd><input type=text size=50 name=title>
+            <dt>Search Dictionary
+            <dd><textarea name=search rows=5 columns=40></textarea>
+            <dt>Chart Format
+            <dd><select name="graphselect">
+                <option value="Bar Graph" name="bargraph">Bar Graph</option>
+                <option value="Pie Chart" name=piechart>Pie Chart</option>
+                <option value="Time-to-Tweets" name=timetotweets>Time Plot
+                    </option>
+                </select>
+            <dt>Interval: <input type=text size=3 name=interval>
+            <dt>Total? <input type=checkbox name=plottotal value=yestotal>
+                <input type="hidden" name=plottotal value=nototal>
+            <dd><input type=submit value=Generate>
+        </dl>
+    </form>
+</body>
+</html>
