@@ -1,3 +1,9 @@
+# TODO
+# 1. Allow easy saving.
+# 2. Better color options.
+# 3. Flexible time rendering.
+# 4. Multiple file support.
+
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import numpy
@@ -10,17 +16,46 @@ from collections import OrderedDict
 # plotting functions
 #####
 
+filename = 'testdata.json'
+
+def interface(plot_type, search_list, filename, plot_total=False, interval=15,
+        start_time=0, end_time=0):
+    """
+    To simplify things, this is an interface function. It prepares the
+    data for processing and picks the correct plot, returning the image file
+    path for Flask to render. Don't mess with the order of options, it will
+    break EVERYTHING.
+    """
+
+    # prep the dictionaries.
+    search_list = search_list.split()
+    sl = search_list # because time_lineplot requires a list of search terms
+    search_list = {term: 0 for term in search_list}
+
+    if plot_type == 'Bar Graph':
+        dictionary = tweetsearch(search_list, filename)
+        return bar_plot(dictionary)
+
+    elif plot_type == 'Time-to-Tweets':
+        dictionary = time_to_tweets(filename, search_list, interval)
+        return time_lineplot(sl, dictionary, interval,
+                plot_total)
+
+    elif plot_type == 'Pie Chart':
+        dictionary = tweetsearch(search_list, filename)
+        return pie_plot(search_list)
+
+    else:
+        print('lol')
+
 def bar_plot(dictionary):
     """
     Plot the data from a dictionary as a bar chart.
     """
-    l = dictionary.split()
-    l = {term: 0 for term in l}
-    labels = list(l.keys())
-    terms = tweetsearch(l, 'testdata.json')
-    counts = list(l.values())
+    labels = list(dictionary.keys())
+    counts = list(dictionary.values())
 
-    y_axis = numpy.arange(len(l.keys()))
+    y_axis = numpy.arange(len(dictionary.keys()))
 
     plt.barh(y_axis, counts, align='center', alpha=0.4)
     plt.yticks(y_axis, labels)
@@ -33,11 +68,9 @@ def bar_plot(dictionary):
 def pie_plot(search_list):
     plt.style.use('fivethirtyeight')
 
-    l = search_list.split()
-    l = {term: 0 for term in l}
-    labels = list(l.keys())
-    terms = tweetsearch(l, 'testdata.json')
-    counts = list(l.values())
+
+    labels = list(search_list.keys())
+    counts = list(search_list.values())
     plt.pie(counts, labels=labels, autopct='%1.1f%%')
 
     plt.axis('equal')
@@ -45,14 +78,14 @@ def pie_plot(search_list):
     plt.close()
     return 'static/image.jpg'
 
-def time_lineplot(search_list, interval=15, plot_total=True):
+def time_lineplot(search_list, time_dictionary, interval=15,
+        plot_total=True):
     """
     Makes a line plot from a search_list. We have to do a lot of setup work to
     make it all happen, first.
     """
     plt.style.use('fivethirtyeight')
 
-    time_dictionary = time_to_tweets('testdata.json', search_list, interval)
     if plot_total == True:
         x_axis = []
         y_axis = []
@@ -80,10 +113,11 @@ def time_lineplot(search_list, interval=15, plot_total=True):
 
         plt.savefig('static/image.jpg')
         plt.close()
+
         return 'static/image.jpg'
 
     elif plot_total == False:
-        search_list = search_list.split()
+
 
         # Here's the list of colors for the lines if we aren't plotting the
         # totals. IT NEEDS TO BE LONGER.
@@ -105,6 +139,7 @@ def time_lineplot(search_list, interval=15, plot_total=True):
 
         plt.savefig('static/image.jpg')
         plt.close()
+
         return 'static/image.jpg'
 
 #####
@@ -120,10 +155,8 @@ def time_to_tweets(filename, search_list, interval=15):
     fi = open(filename, 'r', encoding='utf_8')
 
     time_dictionary = OrderedDict({})
-    search_list = search_list.split()
-    search_dict={x: 0 for x in search_list}
 
-    interval_time = mdate.minutes(interval)
+    interval_time = mdate.minutes(int(interval))
 
     curr_time = 0
     for line in nonblank_lines(fi):
@@ -140,14 +173,14 @@ def time_to_tweets(filename, search_list, interval=15):
                 # into the function, so the right thing gets incremented
 
                 if time_dictionary == {}:
-                    time_dictionary[timename] = dict(search_dict)
+                    time_dictionary[timename] = dict(search_list)
                     time_dictionary[timename][term] += 1
                     curr_time = timename
                 if timename < curr_time + interval_time:
                     time_dictionary[curr_time][term] += 1
                 if timename > curr_time + interval_time:
                     curr_time = timename
-                    time_dictionary[curr_time] = dict(search_dict)
+                    time_dictionary[curr_time] = dict(search_list)
                     time_dictionary[curr_time][term] += 1
 
     fi.close()
@@ -177,7 +210,7 @@ if __name__ == '__main__':
             timedict[str(i).zfill(2) + ':' + str(j * interval).zfill(2)]=0
     test_list = ['trump', 'obama', 'cruz']
 
-    l = OrderedDict(time_to_tweets(timedict, 'testdata.json', interval, test_list))
+    l = OrderedDict(time_to_tweets(timedict, filename, interval, test_list))
 
     x_axis = []
     y_axis = []
