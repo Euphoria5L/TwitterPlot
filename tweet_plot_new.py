@@ -1,8 +1,7 @@
 # TODO
 # 1. Allow easy saving.
 # 2. Better color options.
-# 3. Flexible time rendering.
-# 4. Multiple file support.
+# 3. Multiple file support.
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
@@ -38,15 +37,19 @@ def interface(plot_type, search_list, filename, plot_total=False, interval=15,
 
     elif plot_type == 'Time-to-Tweets':
         dictionary = time_to_tweets(filename, search_list, interval)
-        return time_lineplot(sl, dictionary, interval,
-                plot_total)
+        return time_lineplot(sl, dictionary, interval, plot_total)
 
     elif plot_type == 'Pie Chart':
         dictionary = tweetsearch(search_list, filename)
         return pie_plot(search_list)
 
+    elif plot_type == 'Interval Time':
+        dictionary = time_to_tweets(filename, search_list, interval)
+        dictionary = time_truncate(dictionary, start_time, end_time)
+        return time_lineplot(sl, dictionary, interval, plot_total)
+
     else:
-        print('lol')
+        print('Warning! You did not choose an option')
 
 def bar_plot(dictionary):
     """
@@ -121,7 +124,7 @@ def time_lineplot(search_list, time_dictionary, interval=15,
 
         # Here's the list of colors for the lines if we aren't plotting the
         # totals. IT NEEDS TO BE LONGER.
-        colors = ['b-', 'g-', 'r-', 'y-']
+        colors = ['b-', 'g-', 'r-', 'y-', 'm-']
 
         for term in search_list:
             x_axis = []
@@ -195,6 +198,40 @@ def tweetsearch(term_dictionary, filename):
                 term_dictionary[term] += 1
     fi.close()
     return term_dictionary
+
+def time_truncate(dictionary, start_time, end_time):
+    """ take a dictionary and reduce it to the desired interval.
+
+    """
+
+    # We need to preprocess times into our desired mdates format.
+
+    items = list(dictionary.items())
+
+    zero_time = math.floor(items[0][0])
+    start_time = start_time.split(':')
+    start_time = mdate.hours(float(start_time[0])) + \
+            mdate.minutes(float(start_time[1]))
+    start_time = start_time + zero_time
+
+    end_time = end_time.split(':')
+    end_time = mdate.hours(float(end_time[0])) + \
+            mdate.minutes(float(end_time[1]))
+    end_time = zero_time + end_time
+
+    new_dict = OrderedDict({})
+
+    for time in dictionary:
+        if time < start_time:
+            continue
+        elif time > start_time and time < end_time:
+            new_dict[time] = dictionary[time]
+        elif time > end_time:
+            break
+        else:
+            break
+
+    return new_dict
 
 def nonblank_lines(fi):
     for l in fi:
