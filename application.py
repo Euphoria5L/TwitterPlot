@@ -83,5 +83,5 @@ def add_header(response):
 if __name__ == '__main__':
     # TURN THIS OFF ON A PRODUCTION SERVER! FLASK DEBUG LETS YOU RUN ARBITRARY
     # CODE IT IS ASKING FOR DISASTER IF YOU DON'T. THIS IS VERY IMPORTANT!
-    app.debug = True
+    # app.debug = True
     app.run()
