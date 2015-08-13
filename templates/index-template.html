@@ -43,7 +43,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Project name</a>
+          <a class="navbar-brand" href="#">Twitter Plot</a>
         </div>
 
       </div>
@@ -60,11 +60,11 @@
 
   <div class="container">
       <div class="row">
-          <div class="col-md-4">
+          <div class="col-md-3">
   <form class="form" id=plot-data>
       <dl>
           <dt>Chart Title
-          <dd><input type="text" size=50 id=title>
+          <dd><input type="text" size=30 id=title>
           <dt>Search Dictionary
           <dd><textarea id="search" rows=5 columns=40></textarea>
           <dt>Chart Format
@@ -76,17 +76,17 @@
               <option value="Interval Time" name=interval>Interval Time
                    Plot</option>
               </select>
-          <dt>Interval: <input type=text size=3 id=interval>
-          <dt>Total? <input type=checkbox id=plottotal value=yestotal>
+          <dt><div id="interval_div">Interval: <input type=text size=3 id=interval></div>
+          <dt><div id="total_div">Total? <input type=checkbox id=plottotal value=yestotal></div>
               <!--<input type="hidden" id=plottotal value=nototal>-->
-          <dt>Start Time: <input type=text size=3 id=start_time>
-              <dt>End Time: <input type=text size=3 id=end_time>
+          <dt><div id="start_div">Start Time: <input type=text size=3 id=start_time></div>
+              <dt><div id="end_div">End Time: <input type=text size=3 id=end_time></div>
           <dd><input type="button" id="submit" value=Generate>
       </dl>
   </form>
   </div>
-        <div class="col-md-8">
-          <p><img src="/static/image.jpg" id="graph"></p>
+        <div class="col-md-9">
+          <p><img src="/static/image.png" id="graph"></p>
           </div>
   </div>
 

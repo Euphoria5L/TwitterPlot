@@ -1,0 +1,21 @@
+PLAN FOR FUTURE WORK
+
+NOW
+---
+1. Form validation
+2. Check for out-of-range times on start/end time/interval.
+3. Instructions and help!
+4. Fix the image overflow on some charts.
+
+Short-Term
+----------
+1. Offer easy image saving options
+2. Build JSON file upload system
+3. CSV downloads of time_to_tweets
+
+Long-Term
+---------
+1. Allow gathering of tweet data on the server (NOTE: don't deploy this to AWS!
+it is time-consuming and can compromise the usability of the app! It should just
+be a proof of concept!)
+2. Allow 

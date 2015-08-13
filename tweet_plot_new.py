@@ -1,8 +1,3 @@
-# TODO
-# 1. Allow easy saving.
-# 2. Better color options.
-# 3. Multiple file support.
-
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import numpy
@@ -22,8 +17,7 @@ def interface(plot_type, search_list, filename, plot_total=False, interval=15,
     """
     To simplify things, this is an interface function. It prepares the
     data for processing and picks the correct plot, returning the image file
-    path for Flask to render. Don't mess with the order of options, it will
-    break EVERYTHING.
+    path for Flask to render.
     """
 
     # prep the dictionaries.
@@ -31,6 +25,7 @@ def interface(plot_type, search_list, filename, plot_total=False, interval=15,
     sl = search_list # because time_lineplot requires a list of search terms
     search_list = {term: 0 for term in search_list}
 
+    # we don't need an else since things can't really go off the rails here.
     if plot_type == 'Bar Graph':
         dictionary = tweetsearch(search_list, filename)
         return bar_plot(dictionary)
@@ -48,13 +43,12 @@ def interface(plot_type, search_list, filename, plot_total=False, interval=15,
         dictionary = time_truncate(dictionary, start_time, end_time)
         return time_lineplot(sl, dictionary, interval, plot_total)
 
-    else:
-        print('Warning! You did not choose an option')
-
 def bar_plot(dictionary):
     """
     Plot the data from a dictionary as a bar chart.
     """
+    plt.style.use('fivethirtyeight')
+
     labels = list(dictionary.keys())
     counts = list(dictionary.values())
 
@@ -64,28 +58,32 @@ def bar_plot(dictionary):
     plt.yticks(y_axis, labels)
     plt.xlabel('Tweet Counts')
 
-    plt.savefig('static/image.jpg')
+    plt.savefig('static/image.png')
     plt.close()
-    return 'static/image.jpg'
+    return 'static/image.png'
 
 def pie_plot(search_list):
+    """
+    Self-explanatory. Makes a pie chart.
+    """
     plt.style.use('fivethirtyeight')
-
 
     labels = list(search_list.keys())
     counts = list(search_list.values())
     plt.pie(counts, labels=labels, autopct='%1.1f%%')
 
     plt.axis('equal')
-    plt.savefig('static/image.jpg')
+    plt.savefig('static/image.png')
     plt.close()
-    return 'static/image.jpg'
+    return 'static/image.png'
 
 def time_lineplot(search_list, time_dictionary, interval=15,
         plot_total=True):
     """
-    Makes a line plot from a search_list. We have to do a lot of setup work to
-    make it all happen, first.
+    Makes a line plot from a search_list. We pass the search_list in since
+    it's easy to do; we could retrieve the list from the time_dictionary,
+    or restructure things so that none of this is necessary, but this is a cheap
+    solution that keeps the plotting code away from the parsing code.
     """
     plt.style.use('fivethirtyeight')
 
@@ -114,13 +112,12 @@ def time_lineplot(search_list, time_dictionary, interval=15,
         ax.xaxis.set_major_formatter(mdate.DateFormatter('%I:%M %p'))
         plt.gcf().autofmt_xdate()
 
-        plt.savefig('static/image.jpg')
+        plt.savefig('static/image.png')
         plt.close()
 
-        return 'static/image.jpg'
+        return 'static/image.png'
 
     elif plot_total == False:
-
 
         # Here's the list of colors for the lines if we aren't plotting the
         # totals. IT NEEDS TO BE LONGER.
@@ -140,10 +137,10 @@ def time_lineplot(search_list, time_dictionary, interval=15,
         plt.legend(search_list, loc='upper center', bbox_to_anchor=(0.5, -0.15),
             ncol=5, fancybox=True, shadow=True)
 
-        plt.savefig('static/image.jpg')
+        plt.savefig('static/image.png')
         plt.close()
 
-        return 'static/image.jpg'
+        return 'static/image.png'
 
 #####
 # processing functions
@@ -161,6 +158,7 @@ def time_to_tweets(filename, search_list, interval=15):
 
     interval_time = mdate.minutes(int(interval))
 
+    # this is set to zero because of the way initialization works later
     curr_time = 0
     for line in nonblank_lines(fi):
         jdata = json.loads(line)
@@ -171,17 +169,19 @@ def time_to_tweets(filename, search_list, interval=15):
                     %H:%M:%S %z %Y')
                 timename = mdate.date2num(timestamp)
 
-                # because this function is adequately general, this is just
-                # a way for determining what KIND of dictionary is being fed
-                # into the function, so the right thing gets incremented
-
+                # initializes the dictionary. This is true only once, but we do
+                # it here, rather than earlier, since it lets us initialize it
+                # for the first timename (which we won't know until we've
+                # started searching the JSON file).
                 if time_dictionary == {}:
                     time_dictionary[timename] = dict(search_list)
                     time_dictionary[timename][term] += 1
                     curr_time = timename
+
+                # the conditional below should NOT be an elif!
                 if timename < curr_time + interval_time:
                     time_dictionary[curr_time][term] += 1
-                if timename > curr_time + interval_time:
+                elif timename > curr_time + interval_time:
                     curr_time = timename
                     time_dictionary[curr_time] = dict(search_list)
                     time_dictionary[curr_time][term] += 1
@@ -201,7 +201,11 @@ def tweetsearch(term_dictionary, filename):
 
 def time_truncate(dictionary, start_time, end_time):
     """ take a dictionary and reduce it to the desired interval.
-
+    We do this rather than integrate it into time_to_tweets to keep
+    time_to_tweets from becoming more complicated; this doesn't add
+    any extra time, and requires only slightly more memory. It could be
+    abstracted even more and called in time_to_tweets, but this lets us keep
+    the logic separate and easier to debug.
     """
 
     # We need to preprocess times into our desired mdates format.
@@ -219,6 +223,7 @@ def time_truncate(dictionary, start_time, end_time):
             mdate.minutes(float(end_time[1]))
     end_time = zero_time + end_time
 
+    # we need a new dictionary. It costs a bit of memory.
     new_dict = OrderedDict({})
 
     for time in dictionary:
@@ -234,12 +239,23 @@ def time_truncate(dictionary, start_time, end_time):
     return new_dict
 
 def nonblank_lines(fi):
+    """
+    lets us ignore all blank lines since the Twitter data comes in with line
+    breaks between each tweet JSON.
+    """
     for l in fi:
         line = l.rstrip()
         if line:
             yield line
 
 if __name__ == '__main__':
+    """
+    This is some old testing code. It's old and obsolete, built before the
+    web interface (or even the interface function) was. Here be dragons!
+
+    TODO: build some command line options so tweet_plot can be called from the
+    command line
+    """
     interval=15
     timedict={}
     for i in range(0, 24):
