@@ -22,6 +22,7 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
         <script src="{{ url_for('static', filename='js/vendor/modernizr-2.8.3-respond-1.4.2.min.js') }}"></script>
+        <link href="{{ url_for('static', filename='js/jquery-ui.theme.css') }}" rel="stylesheet" type="text/css">
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -31,13 +32,18 @@
      <script>window.jQuery || document.write('<script src="{{ url_for('static', filename='js/vendor/jquery-1.11.2.min.js') }}"><\/script>')</script>
 
      <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}"></script>
+     <!-- <script src="{{ url_for('static', filename='js/vendor/jquery.validate.js') }}"></script> -->
+     <script src="{{ url_for('static', filename='js/jquery-ui.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="/static/render.js"></script>
 
-     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-     <script src="/static/render.js"></script>
+
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <button type="button" class="navbar-toggle collapsed"
+           data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+            aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -63,27 +69,65 @@
           <div class="col-md-3">
   <form class="form" id=plot-data>
       <dl>
-          <dt>Chart Title
-          <dd><input type="text" size=30 id=title>
-          <dt>Search Dictionary
-          <dd><textarea id="search" rows=5 columns=40></textarea>
           <dt>Chart Format
           <dd><select id="graphselect">
-              <option value="Bar Graph" name="bargraph">Bar Graph</option>
-              <option value="Pie Chart" name=piechart>Pie Chart</option>
-              <option value="Time-to-Tweets" name=timetotweets>Time Plot
+              <option value="bar_plot" name="bar_plot">Bar Graph</option>
+              <option value="pie_plot" name="bar_plot">Pie Chart</option>
+              <option value="time_lineplot" name="time_lineplot">Time Plot
                   </option>
-              <option value="Interval Time" name=interval>Interval Time
+              <option value="time_truncate" name="interval">Interval Time
                    Plot</option>
               </select>
-          <dt><div id="interval_div">Interval: <input type=text size=3 id=interval></div>
-          <dt><div id="total_div">Total? <input type=checkbox id=plottotal value=yestotal></div>
+          <dt>Search Dictionary
+          <dd><textarea id="search" rows=5 columns=40></textarea>
+          <dt><div id="interval_div">Interval: <input type=text size=3
+               id=interval name="interval" value="15"></div>
+          <dt><div id="total_div">Total? <input type=checkbox id=plottotal
+               value=yestotal></div>
               <!--<input type="hidden" id=plottotal value=nototal>-->
-          <dt><div id="start_div">Start Time: <input type=text size=3 id=start_time></div>
-              <dt><div id="end_div">End Time: <input type=text size=3 id=end_time></div>
+          <dt><div id="start_div">Start Time: <input type=text size=3
+               id=start_time></div>
+          <dt><div id="end_div">End Time: <input type=text size=3
+               id=end_time></div>
           <dd><input type="button" id="submit" value=Generate>
       </dl>
   </form>
+  <div id="help-dialog">
+      <p>TwitterPlot is easy to use. Select your plot-type from the
+           following:</p>
+      <ul>
+          <li><b>Bar Graph:</b> a simple numerical count of tweets mentioning
+               the terms.</li>
+          <li><b>Pie Chart:</b> a pie chart with percentages of tweets</li>
+          <li><b>Time Plot:</b> tweet frequency over time (check 'total' to sum
+               the tweets at any given time).</li>
+          <li><b>Interval Time Plot:</b> select a start and end time for
+               plotting a time plot.</li>
+      </ul>
+      <p>The <b>Interval</b> setting is used on Time Plot and Interval Time Plot
+           to increase/decrease resolution of the line plot</p>
+      <h4>Search Terms</h4>
+      <p>You can use any number of search terms in the search dictionary,
+           including hashtags. Capitalization does not matter.</p>
+      <h4>Caveats</h4>
+      <p>The demo version you're using has some limitations</p>
+      <ul>
+          <li>Time Plots can plot a maximmum of FIVE terms.</li>
+          <li>The start/end times are NOT validated yet! The data set is between
+               approximately 00:00 UTC and 02:50 UTC, and they MUST be in the
+                format '00:00'.</li>
+          <li>The data set is from the first Republican debate. So use those
+              search terms! You might not get much for 'python' but you will
+              get a lot for 'trump'</li>
+          <li>You will notice that the data drops around 3:00AM. This is
+              unavoidable with the way the data is processed (this is a design decision--data is not being lost).</li>
+          <li>If you have any questions about the software, don't hesitate to
+              email me at <a
+               href="mailto:christopher.james.richards@gmail.com">
+               christopher.james.richards@gmail.com</a></li>
+      </ul>
+  </div>
+  <div id="help">Help!</div>
   </div>
         <div class="col-md-9">
           <p><img src="/static/image.png" id="graph"></p>

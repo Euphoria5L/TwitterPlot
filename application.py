@@ -1,26 +1,27 @@
-from flask import Flask, render_template, request, redirect
-import tweet_plot_new as tweet_plot # temporary: will be fixed
-import os
-from werkzeug import secure_filename
+from flask import Flask, render_template, request
+import tweet_plot
+# from werkzeug import secure_filename
 
 UPLOAD_FOLDER = '/'
 ALLOWED_EXTENSIONS = set(['txt', 'json'])
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     return render_template('index-template.html')
+
 
 @app.route('/plot', methods=['POST', 'GET'])
 def plot_data():
     """
     First we check if it's being POSTed. This is an artifact of older code,
     but I'm not removing it just in case it's some day useful for a different
-    purpose. Otherwise, we grab the data from JQuery and pass it to the plotting
-    function, which generates a new image for JQuery to reload.
+    purpose. Otherwise, we grab the data from JQuery and pass it to the
+    plotting function, which generates a new image for JQuery to reload.
     """
-    if request.method =='POST':
+    if request.method == 'POST':
         plot_type = request.form['graphselect']
         search_list = request.form['search']
         filename = 'testdata.json'
@@ -40,7 +41,7 @@ def plot_data():
         end_time = request.form['end_time']
 
         f = tweet_plot.interface(plot_type, search_list, filename, plot_total,
-                interval, start_time, end_time)
+                                 interval, start_time, end_time)
         title = 'title'
 
     plot_type = request.args.get('plot_type')
@@ -51,7 +52,7 @@ def plot_data():
         plot_total = True
     else:
         plot_total = False
-    interval = request.args.get('interval');
+    interval = request.args.get('interval')
 
     if interval == '':
         interval = 15
@@ -62,10 +63,11 @@ def plot_data():
     end_time = request.args.get('end_time')
 
     f = tweet_plot.interface(plot_type, search_list, filename, plot_total,
-            interval, start_time, end_time)
+                             interval, start_time, end_time)
     title = 'title'
 
     return render_template('plot.html', f=f, title=title)
+
 
 @app.after_request
 def add_header(response):
@@ -83,5 +85,5 @@ def add_header(response):
 if __name__ == '__main__':
     # TURN THIS OFF ON A PRODUCTION SERVER! FLASK DEBUG LETS YOU RUN ARBITRARY
     # CODE IT IS ASKING FOR DISASTER IF YOU DON'T. THIS IS VERY IMPORTANT!
-    # app.debug = True
+    app.debug = True
     app.run()
