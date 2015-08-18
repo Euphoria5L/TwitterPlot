@@ -1,19 +1,25 @@
+import matplotlib
+matplotlib.use('Agg')  # Needed to run properly on Ubuntu on AWS
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import numpy
 import math
 import datetime
 import json
+import os
 from collections import OrderedDict
 
 #####
 # plotting functions
 #####
 
-filename = 'testdata.json'
+# IMPORTANT! The style settings are not available on Ubuntu on EC2!
+
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+image_dest = os.path.join(SITE_ROOT, 'static', 'image.png')
 
 
-def interface(plot_type, search_list, filename, plot_total=False, interval=15,
+def interface(plot_type, search_list, filename, plot_total, interval=15,
               start_time=0, end_time=0):
     """
     To simplify things, this is an interface function. It prepares the
@@ -25,7 +31,7 @@ def interface(plot_type, search_list, filename, plot_total=False, interval=15,
     search_list = search_list.split()
     sl = search_list  # because time_lineplot requires a list of search terms
     search_list = {term: 0 for term in search_list}
-
+    print(plot_total)
     # we don't need an else since things can't really go off the rails here.
     if plot_type == 'bar_plot':
         dictionary = tweetsearch(search_list, filename)
@@ -49,7 +55,7 @@ def bar_plot(dictionary):
     """
     Plot the data from a dictionary as a bar chart.
     """
-    plt.style.use('fivethirtyeight')
+    # plt.style.use('fivethirtyeight')
 
     labels = list(dictionary.keys())
     counts = list(dictionary.values())
@@ -60,7 +66,7 @@ def bar_plot(dictionary):
     plt.yticks(y_axis, labels)
     plt.xlabel('Tweet Counts')
 
-    plt.savefig('static/image.png', bbox_inches='tight', dpi=100)
+    plt.savefig(image_dest, bbox_inches='tight', dpi=100)
     plt.close()
     return 'static/image.png'
 
@@ -69,14 +75,14 @@ def pie_plot(search_list):
     """
     Self-explanatory. Makes a pie chart.
     """
-    plt.style.use('fivethirtyeight')
+    # plt.style.use('fivethirtyeight')
 
     labels = list(search_list.keys())
     counts = list(search_list.values())
     plt.pie(counts, labels=labels, autopct='%1.1f%%')
 
     plt.axis('equal')
-    plt.savefig('static/image.png')
+    plt.savefig(image_dest)
     plt.close()
     return 'static/image.png'
 
@@ -89,7 +95,7 @@ def time_lineplot(search_list, time_dictionary, interval=15,
     or restructure things so that none of this is necessary, but this is a
     cheap solution that keeps the plotting code away from the parsing code.
     """
-    plt.style.use('fivethirtyeight')
+    # plt.style.use('fivethirtyeight')
 
     if plot_total is True:
         x_axis = []
@@ -116,7 +122,7 @@ def time_lineplot(search_list, time_dictionary, interval=15,
         ax.xaxis.set_major_formatter(mdate.DateFormatter('%I:%M %p'))
         plt.gcf().autofmt_xdate()
 
-        plt.savefig('static/image.png')
+        plt.savefig(image_dest)
         plt.close()
 
         return 'static/image.png'
@@ -142,7 +148,7 @@ def time_lineplot(search_list, time_dictionary, interval=15,
                    bbox_to_anchor=(0.5, -0.15),
                    ncol=5, fancybox=True, shadow=True)
 
-        plt.savefig('static/image.png')
+        plt.savefig(image_dest)
         plt.close()
 
         return 'static/image.png'
@@ -218,9 +224,7 @@ def time_truncate(dictionary, start_time, end_time):
 
     # We need to preprocess times into our desired mdates format.
 
-    items = list(dictionary.items())
-
-    zero_time = math.floor(items[0][0])
+    zero_time = list(dictionary.keys())[0]
     start_time = start_time.split(':')
     start_time = mdate.hours(float(start_time[0])) + \
         mdate.minutes(float(start_time[1]))
@@ -268,11 +272,12 @@ if __name__ == '__main__':
     interval = 15
     timedict = {}
     for i in range(0, 24):
-        for j in range(0, math.ceil(60/interval)):
+        for j in range(0, math.ceil(60 / interval)):
             timedict[str(i).zfill(2) + ':' + str(j * interval).zfill(2)] = 0
     test_list = ['trump', 'obama', 'cruz']
 
-    l = OrderedDict(time_to_tweets(timedict, filename, interval, test_list))
+    l = OrderedDict(time_to_tweets(timedict, 'testdata.json', interval,
+                    test_list))
 
     x_axis = []
     y_axis = []

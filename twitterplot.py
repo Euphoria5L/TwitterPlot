@@ -1,19 +1,21 @@
 from flask import Flask, render_template, request
 import tweet_plot
+import os
 # from werkzeug import secure_filename
 
 UPLOAD_FOLDER = '/'
 ALLOWED_EXTENSIONS = set(['txt', 'json'])
 
-app = Flask(__name__)
+twitterplot = Flask(__name__)
+# twitterplot.debug = True
 
 
-@app.route('/')
+@twitterplot.route('/')
 def home():
     return render_template('index-template.html')
 
 
-@app.route('/plot', methods=['POST', 'GET'])
+@twitterplot.route('/plot', methods=['POST', 'GET'])
 def plot_data():
     """
     First we check if it's being POSTed. This is an artifact of older code,
@@ -21,17 +23,19 @@ def plot_data():
     purpose. Otherwise, we grab the data from JQuery and pass it to the
     plotting function, which generates a new image for JQuery to reload.
     """
+    SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+    filename = os.path.join(SITE_ROOT, 'testdata.json')
+    # filename = '/var/www/twitterplot/testdata.json'
+
     if request.method == 'POST':
         plot_type = request.form['graphselect']
         search_list = request.form['search']
-        filename = 'testdata.json'
         if request.form['plottotal'] == 'yestotal':
             plot_total = True
         else:
             plot_total = False
         interval = request.form['interval']
 
-        print(request.form['plottotal'])
         if interval == '':
             interval = 15
         else:
@@ -46,7 +50,7 @@ def plot_data():
 
     plot_type = request.args.get('plot_type')
     search_list = request.args.get('search_list')
-    filename = 'testdata.json'
+
     print(request.args.get('plottotal'))
     if request.args.get('plottotal') == 'true':
         plot_total = True
@@ -69,7 +73,7 @@ def plot_data():
     return render_template('plot.html', f=f, title=title)
 
 
-@app.after_request
+@twitterplot.after_request
 def add_header(response):
     """
     Old function for making sure new images loaded when /plot was POSTed to
@@ -85,5 +89,5 @@ def add_header(response):
 if __name__ == '__main__':
     # TURN THIS OFF ON A PRODUCTION SERVER! FLASK DEBUG LETS YOU RUN ARBITRARY
     # CODE IT IS ASKING FOR DISASTER IF YOU DON'T. THIS IS VERY IMPORTANT!
-    app.debug = True
-    app.run()
+    twitterplot.debug = True
+    twitterplot.run()

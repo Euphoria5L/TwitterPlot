@@ -2,10 +2,8 @@ PLAN FOR FUTURE WORK
 
 NOW
 ---
-1. Form validation
+1. Better validation
 2. Check for out-of-range times on start/end time/interval.
-3. Instructions and help!
-4. Fix the image overflow on some charts.
 
 Short-Term
 ----------
@@ -18,4 +16,15 @@ Long-Term
 1. Allow gathering of tweet data on the server (NOTE: don't deploy this to AWS!
 it is time-consuming and can compromise the usability of the app! It should just
 be a proof of concept!)
-2. Allow 
+2. Allow users to combine data sets.
+
+SUPER Long-Term
+---------------
+1. Allow multiple users (note: the current setup could add users easily, but
+given the way the processing code works, there are possible collisions and
+process problems that will likely creep in, so it might need the use of
+something like Twisted--this requires research and experimentation!)
+2. Dump data into SQL server and manipulate it that way (this necessitates
+rewriting some of the processing code, since it is designed to operate on JSON
+files, and while most isn't specifically dependent on JSON files (using jsonify
+could work), there are some wrinkles involved)

@@ -55,12 +55,15 @@ $(document).ready(function() {
         $.getJSON('/plot',
         {plot_type: $('#graphselect').val(),
         search_list: $('#search').val(),
-        plottotal: $('#plottotal').is('checked'),
+        plottotal: $('#plottotal').is(':checked'),
         interval: $('#interval').val(),
         start_time: $('#start_time').val(),
         end_time: $('#end_time').val()});
-        $('#graph').removeAttr('src');
-        $('#graph').attr('src', '/static/image.png?timestamp=' + new Date().getTime());
+
+        setTimeout(function () {
+            $('#graph').removeAttr('src');
+            $('#graph').attr('src', '/static/image.png?timestamp=' + new Date().getTime());
+        }, 3000)
     });
 
     $('#help-dialog').dialog({

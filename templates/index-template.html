@@ -82,8 +82,7 @@
           <dd><textarea id="search" rows=5 columns=40></textarea>
           <dt><div id="interval_div">Interval: <input type=text size=3
                id=interval name="interval" value="15"></div>
-          <dt><div id="total_div">Total? <input type=checkbox id=plottotal
-               value=yestotal></div>
+          <dt><div id="total_div">Total? <input type=checkbox id=plottotal></div>
               <!--<input type="hidden" id=plottotal value=nototal>-->
           <dt><div id="start_div">Start Time: <input type=text size=3
                id=start_time></div>
@@ -113,14 +112,13 @@
       <p>The demo version you're using has some limitations</p>
       <ul>
           <li>Time Plots can plot a maximmum of FIVE terms.</li>
-          <li>The start/end times are NOT validated yet! The data set is between
-               approximately 00:00 UTC and 02:50 UTC, and they MUST be in the
-                format '00:00'.</li>
+          <li>The start/end time fields take '00:00' formatted times, which
+              are hours:minutes from the beginning of the data set. The data set starts at approximately 23:50 UTC and ends around 2:55 UTC.</li>
           <li>The data set is from the first Republican debate. So use those
               search terms! You might not get much for 'python' but you will
               get a lot for 'trump'</li>
           <li>You will notice that the data drops around 3:00AM. This is
-              unavoidable with the way the data is processed (this is a design decision--data is not being lost).</li>
+              unavoidable with the way the data is displayed (this is a design decision--data is not being lost).</li>
           <li>If you have any questions about the software, don't hesitate to
               email me at <a
                href="mailto:christopher.james.richards@gmail.com">
