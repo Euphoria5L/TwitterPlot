@@ -3,11 +3,45 @@ matplotlib.use('Agg')  # Needed to run properly on Ubuntu on AWS
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdate
 import numpy
-import math
 import datetime
 import json
 import os
 from collections import OrderedDict
+
+
+class Parameters:
+    def __init__(self):
+        self.interval = 15
+        self.start_time = 0
+        self.end_time = 0
+        self.search_list = []
+        self.plot_total = False
+        self.filename = ''
+
+    def plot_typehandle(self, plot_name):
+        if plot_name == 'bar_plot':
+            self.plot_type = plot_name
+        if plot_name == 'time_lineplot':
+            self.plot_type = plot_name
+        if plot_name == 'pie_plot':
+            self.plot_type = plot_name
+        if plot_name == 'time_truncate':
+            self.plot_type = plot_name
+        else:
+            # error handling code; because the site uses a drop-down menu this
+            # probably doesn't need to be handled, but it's nice to have
+            return 0
+
+        return
+
+    def add_search_list(self, search):
+        if len(search) == 0:
+            # error handling code. The form is validated so it shouldn't get
+            # submitted.
+            return 0
+        else:
+            _search_list = search
+            self.search_list = _search_list.split()
 
 #####
 # plotting functions
@@ -19,36 +53,46 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 image_dest = os.path.join(SITE_ROOT, 'static', 'image.png')
 
 
-def interface(plot_type, search_list, filename, plot_total, interval=15,
-              start_time=0, end_time=0):
+def interface(plot_params):
     """
     To simplify things, this is an interface function. It prepares the
     data for processing and picks the correct plot, returning the image file
     path for Flask to render.
     """
 
-    # prep the dictionaries.
-    search_list = search_list.split()
-    sl = search_list  # because time_lineplot requires a list of search terms
-    search_list = {term: 0 for term in search_list}
-    print(plot_total)
+    # prep the search dictionary
+    search_list = {term: 0 for term in plot_params.search_list}
+
     # we don't need an else since things can't really go off the rails here.
-    if plot_type == 'bar_plot':
-        dictionary = tweetsearch(search_list, filename)
+    if plot_params.plot_type == 'bar_plot':
+        dictionary = tweetsearch(search_list,
+                                 plot_params.filename)
         return bar_plot(dictionary)
 
-    elif plot_type == 'time_lineplot':
-        dictionary = time_to_tweets(filename, search_list, interval)
-        return time_lineplot(sl, dictionary, interval, plot_total)
+    elif plot_params.plot_type == 'time_lineplot':
+        dictionary = time_to_tweets(plot_params.filename,
+                                    search_list,
+                                    plot_params.interval)
+        return time_lineplot(plot_params.search_list,
+                             dictionary,
+                             plot_params.interval,
+                             plot_params.plot_total)
 
-    elif plot_type == 'pie_plot':
-        dictionary = tweetsearch(search_list, filename)
-        return pie_plot(search_list)
+    elif plot_params.plot_type == 'pie_plot':
+        dictionary = tweetsearch(search_list,
+                                 plot_params.filename)
+        return pie_plot(dictionary)
 
-    elif plot_type == 'time_truncate':
-        dictionary = time_to_tweets(filename, search_list, interval)
-        dictionary = time_truncate(dictionary, start_time, end_time)
-        return time_lineplot(sl, dictionary, interval, plot_total)
+    elif plot_params.plot_type == 'time_truncate':
+        dictionary = time_to_tweets(plot_params.filename,
+                                    search_list,
+                                    plot_params.interval)
+        dictionary = time_truncate(dictionary,
+                                   plot_params.start_time,
+                                   plot_params.end_time)
+        return time_lineplot(plot_params.search_list,
+                             dictionary, plot_params.interval,
+                             plot_params.plot_total)
 
 
 def bar_plot(dictionary):
@@ -254,7 +298,7 @@ def time_truncate(dictionary, start_time, end_time):
 def nonblank_lines(fi):
     """
     lets us ignore all blank lines since the Twitter data comes in with line
-    breaks between each tweet JSON.
+    breaks between each tweet JSON. A generator for memory saving power!
     """
     for l in fi:
         line = l.rstrip()
@@ -269,27 +313,4 @@ if __name__ == '__main__':
     TODO: build some command line options so tweet_plot can be called from the
     command line
     """
-    interval = 15
-    timedict = {}
-    for i in range(0, 24):
-        for j in range(0, math.ceil(60 / interval)):
-            timedict[str(i).zfill(2) + ':' + str(j * interval).zfill(2)] = 0
-    test_list = ['trump', 'obama', 'cruz']
-
-    l = OrderedDict(time_to_tweets(timedict, 'testdata.json', interval,
-                    test_list))
-
-    x_axis = []
-    y_axis = []
-    print(l)
-    for key in l:
-        if l[key] == 0:
-            continue
-        else:
-            x_axis.append(mdate.date2num(datetime.datetime.strptime(key,
-                          '%H:%M')))
-            y_axis.append(l[key])
-    x_axis = sorted(x_axis)
-
-    plt.plot(x_axis, y_axis)
-    plt.show()
+    print('hi')

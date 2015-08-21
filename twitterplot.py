@@ -26,48 +26,50 @@ def plot_data():
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     filename = os.path.join(SITE_ROOT, 'testdata.json')
     # filename = '/var/www/twitterplot/testdata.json'
+    plot_params = tweet_plot.Parameters()
 
     if request.method == 'POST':
-        plot_type = request.form['graphselect']
-        search_list = request.form['search']
+        plot_params.plot_typehandle(request.form['graphselect'])
+        plot_params.search_list = request.form['search']
         if request.form['plottotal'] == 'yestotal':
-            plot_total = True
+            plot_params.plot_total = True
         else:
-            plot_total = False
+            plot_params.plot_total = False
         interval = request.form['interval']
 
         if interval == '':
-            interval = 15
+            plot_params.interval = 15
         else:
-            interval = int(interval)
+            plot_params.interval = int(interval)
 
-        start_time = request.form['start_time']
-        end_time = request.form['end_time']
+        plot_params.start_time = request.form['start_time']
+        plot_params.end_time = request.form['end_time']
+        plot_params.filename = filename
 
-        f = tweet_plot.interface(plot_type, search_list, filename, plot_total,
-                                 interval, start_time, end_time)
+        f = tweet_plot.interface(plot_params)
         title = 'title'
 
-    plot_type = request.args.get('plot_type')
-    search_list = request.args.get('search_list')
+        return render_template('plot.html', f=f, title=title)
 
-    print(request.args.get('plottotal'))
+    plot_params.plot_typehandle(request.args.get('plot_type'))
+    plot_params.add_search_list(request.args.get('search_list'))
+
     if request.args.get('plottotal') == 'true':
-        plot_total = True
+        plot_params.plot_total = True
     else:
-        plot_total = False
+        plot_params.plot_total = False
     interval = request.args.get('interval')
 
     if interval == '':
-        interval = 15
+        plot_params.interval = 15
     else:
-        interval = int(interval)
+        plot_params.interval = int(interval)
 
-    start_time = request.args.get('start_time')
-    end_time = request.args.get('end_time')
+    plot_params.start_time = request.args.get('start_time')
+    plot_params.end_time = request.args.get('end_time')
+    plot_params.filename = filename
 
-    f = tweet_plot.interface(plot_type, search_list, filename, plot_total,
-                             interval, start_time, end_time)
+    f = tweet_plot.interface(plot_params)
     title = 'title'
 
     return render_template('plot.html', f=f, title=title)

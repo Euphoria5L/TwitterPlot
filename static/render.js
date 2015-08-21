@@ -62,8 +62,8 @@ $(document).ready(function() {
 
         setTimeout(function () {
             $('#graph').removeAttr('src');
-            $('#graph').attr('src', '/static/image.png?timestamp=' + new Date().getTime());
-        }, 3000)
+            $('#graph').attr('src', 'static/image.png?timestamp=' + new Date().getTime());
+        }, 3000);
     });
 
     $('#help-dialog').dialog({
