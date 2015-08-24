@@ -38,18 +38,38 @@ $(document).ready(function() {
 
     $('#submit').click(function() {
 
-        // TODO: rewrite this to use real form validation via jquery.validate
-        // ALSO! write a basic validator for start_time and end_time
-        if ($('#interval').is('visible')) {
+        // form validation code; throw an alert when it's bad.
+        if ($('#interval').is(':visible')) {
+            // Just in case a browser doesn't support input type="number"
+            if (/^\d{2}$/.test($('#interval').val()) === false) {
+                alert('Must be interval between 1 minute and 60 minutes!');
+                return;
+            }
+
             if (Number($('#interval').val()) < 1 ||
                 Number($('#interval').val()) > 60) {
                     alert('Must be interval between 1 minute and 60 minutes!');
                     return;
             }
         }
+
         if ($('#search').val().length === 0) {
             alert('Must include at least one search term!');
             return;
+        }
+
+        if ($('#start_time').is(':visible')) {
+            if (/^\d{2}[:]\d{2}$/.test($('#start_time').val()) === false) {
+                alert('Times must be in format "NN:NN"');
+                return;
+            }
+        }
+
+        if ($('#end_time').is(':visible')) {
+            if (/^\d{2}[:]\d{2}$/.test($('#end_time').val()) === false) {
+                alert('Times must be in format "NN:NN"');
+                return;
+            }
         }
 
         $.getJSON('/plot',
@@ -60,6 +80,9 @@ $(document).ready(function() {
         start_time: $('#start_time').val(),
         end_time: $('#end_time').val()});
 
+        // for refreshing image; we remove src, then add it on a delay
+        // the delay is required so that the image isn't replaced before
+        // the image is actually newly generated
         setTimeout(function () {
             $('#graph').removeAttr('src');
             $('#graph').attr('src', 'static/image.png?timestamp=' + new Date().getTime());
@@ -73,6 +96,7 @@ $(document).ready(function() {
         title: "HELP",
         height: 500,
         width: 800,
+        closeText: 'X'
     });
 
     $('#help').click(function() {

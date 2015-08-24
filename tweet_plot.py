@@ -10,6 +10,14 @@ from collections import OrderedDict
 
 
 class Parameters:
+    """
+    This class defines the parameters for calling the functions. It contains
+    the default values, but also has two functions that handle some checking
+    and formatting of some data.
+
+    We don't let users pass values into init because this is meant to clean up
+    the code, not make it look complicated.
+    """
     def __init__(self):
         self.interval = 15
         self.start_time = 0
@@ -18,15 +26,18 @@ class Parameters:
         self.plot_total = False
         self.filename = ''
 
-    def plot_typehandle(self, plot_name):
-        if plot_name == 'bar_plot':
-            self.plot_type = plot_name
-        if plot_name == 'time_lineplot':
-            self.plot_type = plot_name
-        if plot_name == 'pie_plot':
-            self.plot_type = plot_name
-        if plot_name == 'time_truncate':
-            self.plot_type = plot_name
+    def plot_typehandle(self, _plot_type):
+        """
+        Check the plot_type to make sure our code can handle it.
+        """
+        if _plot_type == 'bar_plot':
+            self.plot_type = _plot_type
+        if _plot_type == 'time_lineplot':
+            self.plot_type = _plot_type
+        if _plot_type == 'pie_plot':
+            self.plot_type = _plot_type
+        if _plot_type == 'time_truncate':
+            self.plot_type = _plot_type
         else:
             # error handling code; because the site uses a drop-down menu this
             # probably doesn't need to be handled, but it's nice to have
@@ -35,9 +46,12 @@ class Parameters:
         return
 
     def add_search_list(self, search):
+        """
+        Split the search_list so the code later doesn't have to do it
+        """
         if len(search) == 0:
-            # error handling code. The form is validated so it shouldn't get
-            # submitted.
+            # error handling code. The form is validated so this shouldn't
+            # happen
             return 0
         else:
             _search_list = search
@@ -56,8 +70,7 @@ image_dest = os.path.join(SITE_ROOT, 'static', 'image.png')
 def interface(plot_params):
     """
     To simplify things, this is an interface function. It prepares the
-    data for processing and picks the correct plot, returning the image file
-    path for Flask to render.
+    data for processing and picks the correct plot.
     """
 
     # prep the search dictionary
@@ -112,7 +125,7 @@ def bar_plot(dictionary):
 
     plt.savefig(image_dest, bbox_inches='tight', dpi=100)
     plt.close()
-    return 'static/image.png'
+    return
 
 
 def pie_plot(search_list):
@@ -128,7 +141,7 @@ def pie_plot(search_list):
     plt.axis('equal')
     plt.savefig(image_dest)
     plt.close()
-    return 'static/image.png'
+    return
 
 
 def time_lineplot(search_list, time_dictionary, interval=15,
@@ -169,7 +182,7 @@ def time_lineplot(search_list, time_dictionary, interval=15,
         plt.savefig(image_dest)
         plt.close()
 
-        return 'static/image.png'
+        return
 
     elif plot_total is False:
 
@@ -195,7 +208,7 @@ def time_lineplot(search_list, time_dictionary, interval=15,
         plt.savefig(image_dest)
         plt.close()
 
-        return 'static/image.png'
+        return
 
 #####
 # processing functions
@@ -307,8 +320,8 @@ def nonblank_lines(fi):
 
 if __name__ == '__main__':
     """
-    This is some old testing code. It's old and obsolete, built before the
-    web interface (or even the interface function) was. Here be dragons!
+    This was some old testing code. It no longer worked, so I cleared it. Now
+    it just tells you hello.
 
     TODO: build some command line options so tweet_plot can be called from the
     command line
