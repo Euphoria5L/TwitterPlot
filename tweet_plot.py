@@ -54,8 +54,8 @@ class Parameters:
             # happen
             return 0
         else:
-            _search_list = search
-            self.search_list = _search_list.split()
+            _search_list = search.lower()
+            self.search_list = list(set(_search_list.split()))
 
 #####
 # plotting functions

@@ -3,14 +3,18 @@
 <head><title>TwitterPlot</title>
     <link rel="stylesheet" href="{{ url_for('static',
     filename='css/bootstrap.min.css') }}" type="text/css">
-    <link href="{{ url_for('static', filename='js/jquery-ui.theme.min.css') }}"
+    <link href="{{ url_for('static', filename='jquery-ui.theme.min.css') }}"
     rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
 </head>
 <body>
+    <h1 class="text-center">Twitterplot</h1>
     <div class="container">
     <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-2">
+    <p>Twitterplot uses data from Twitter. The current data set is from the Republican debate, following several relevant hashtags. Enter search terms separated by spaces and have fun!</p>
+    </div>
+    <div class="col-md-2">
     <form class="form" id=plot-data>
         <dl>
             <dt>Chart Format
@@ -55,14 +59,15 @@
         <h4>Caveats</h4>
         <p>The demo version you're using has some limitations</p>
         <ul>
-            <li>Time Plots can plot a maximmum of FIVE terms.</li>
+            <li>Time Plots can plot a maximum of FIVE terms.</li>
             <li>The start/end time fields take '00:00' formatted times, which
                 are hours:minutes from the beginning of the data set. The data set starts at approximately 23:50 UTC and ends around 2:55 UTC.</li>
-            <li>The data set is from the first Republican debate. So use those
-                search terms! You might not get much for 'python' but you will
-                get a lot for 'trump'</li>
+            <li>The data set is from the first Republican debate following a few
+                related hashtags. So use those search terms! You might not get
+                much for 'python' but you will get a lot for 'trump'</li>
             <li>You will notice that the data drops around 3:00AM. This is
-                unavoidable with the way the data is displayed (this is a design decision--data is not being lost).</li>
+                unavoidable with the way the data is displayed (this is a design
+                decision--data is not being lost).</li>
             <li>If you have any questions about the software, don't hesitate to
                 email me at <a
                  href="mailto:christopher.james.richards@gmail.com">
@@ -71,13 +76,13 @@
     </div>
     <div id="help">Help!</div>
     </div>
-          <div class="col-md-9">
+          <div class="col-md-8">
             <p><img src="static/image.png" id="graph"></p>
             </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/vendor/jquery-1.11.2.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/jquery-1.11.2.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/jquery-ui.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='render.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/render.js') }}"></script>
 </body>
 </html>

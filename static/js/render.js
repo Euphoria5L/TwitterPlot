@@ -41,7 +41,7 @@ $(document).ready(function() {
         // form validation code; throw an alert when it's bad.
         if ($('#interval').is(':visible')) {
             // Just in case a browser doesn't support input type="number"
-            if (/^\d{2}$/.test($('#interval').val()) === false) {
+            if (!/^\d{1,2}$/.test($('#interval').val())) {
                 alert('Must be interval between 1 minute and 60 minutes!');
                 return;
             }
@@ -94,7 +94,7 @@ $(document).ready(function() {
         autoOpen: false,
         modal: true,
         title: "HELP",
-        height: 500,
+        height: 550,
         width: 800,
         closeText: 'X'
     });
