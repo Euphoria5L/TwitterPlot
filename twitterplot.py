@@ -25,29 +25,6 @@ def plot_data():
     filename = os.path.join(SITE_ROOT, 'testdata.json')
     plot_params = tweet_plot.Parameters()
 
-    if request.method == 'POST':
-        plot_params.plot_typehandle(request.args.get('plot_type'))
-        plot_params.add_search_list(request.args.get('search_list'))
-
-        if request.args.get('plottotal') == 'true':
-            plot_params.plot_total = True
-        else:
-            plot_params.plot_total = False
-        interval = request.args.get('interval')
-
-        if interval == '':
-            plot_params.interval = 15
-        else:
-            plot_params.interval = int(interval)
-
-        plot_params.start_time = request.args.get('start_time')
-        plot_params.end_time = request.args.get('end_time')
-        plot_params.filename = filename
-
-        tweet_plot.interface(plot_params)
-
-        return jsonify({})
-
     plot_params.plot_typehandle(request.args.get('plot_type'))
     plot_params.add_search_list(request.args.get('search_list'))
 

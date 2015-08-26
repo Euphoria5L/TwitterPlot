@@ -11,7 +11,9 @@ Long-Term
 1. Allow gathering of tweet data on the server (NOTE: don't deploy this to AWS!
 it is time-consuming and can compromise the usability of the app! It should just
 be a proof of concept!)
-2. Allow multiple users (note: the current setup should easily allow multiple users, but the image delivery code would need to be rewritten from the ground up)
+2. Allow multiple users (note: the current setup should easily allow multiple
+users, but the image delivery code would need to be rewritten from the ground
+up)
 
 SUPER Long-Term
 ---------------
