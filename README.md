@@ -56,7 +56,7 @@ The search list is an empty list. It's manipulated via a method, add_search_list
 ```python
 plot_total = False
 ```
-This applies to a line plot. If you check it, the data is summed before being plotted.
+This applies to a line plot. If True, the data is summed before being plotted.
 
 #### Filename
 ```python
