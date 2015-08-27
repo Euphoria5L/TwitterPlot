@@ -14,12 +14,8 @@ def home():
 @twitterplot.route('/plot', methods=['POST', 'GET'])
 def plot_data():
     """
-    First we check if it's being POSTed. This is an artifact of older code,
-    but I'm not removing it just in case it's some day useful for a different
-    purpose. Otherwise, we grab the data from JQuery and pass it to the
+    We grab the data from JQuery and pass it to the
     plotting function, which generates a new image for JQuery to reload.
-
-    TODO: There is some duplicate code here. I need to clean it.
     """
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     filename = os.path.join(SITE_ROOT, 'testdata.json')
@@ -43,9 +39,28 @@ def plot_data():
     plot_params.end_time = request.args.get('end_time')
     plot_params.filename = filename
 
-    tweet_plot.interface(plot_params)
+    userid = str(request.args.get('userid'))
+    user_images = os.path.join(SITE_ROOT, 'static', 'images', userid)
+    if os.path.exists(user_images):
+        plot_params.image_destination(os.path.join(user_images, 'image.png'))
+    else:
+        os.mkdir(user_images)
 
-    return jsonify({})
+    tweet_plot.interface(plot_params)
+    print(os.path.join(user_images, str(1) + '.png'))
+
+    # the following is kind of ugly! It could be prettified a bit
+    if os.path.exists(os.path.join(user_images, '1.png')):
+        for i in range(10, 0, -1):
+            if i == 10 and os.path.exists(os.path.join(user_images, '10.png')):
+                os.remove(os.path.join(user_images, '10.png'))
+            elif os.path.exists(os.path.join(user_images, str(i) + '.png')):
+                os.rename(os.path.join(user_images, str(i) + '.png'),
+                          os.path.join(user_images, str(i + 1) + '.png'))
+    os.rename(os.path.join(user_images, 'image.png'),
+              os.path.join(user_images, '1.png'))
+
+    return jsonify({'image_url': str('static/images/' + userid + '/1.png')})
 
 
 @twitterplot.after_request

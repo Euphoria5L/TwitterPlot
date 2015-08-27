@@ -1,5 +1,20 @@
 PLAN FOR FUTURE WORK
 
+X1. Assign users a timestamp-based id, stored in localstorage (via Javascript)
+X2. If the user doesn't have a timestamp id, display a placeholder image (JS)
+X3. pass this ID through to flask (JS->Python)
+X4. If this is the first time the ID is passed through, create an
+images/timestamp folder (Python)
+X5. Pass through the image.png name and save it to images/timestamp (Python)
+X6. Check the contents of images/timestamp. If there is nothing there, move
+image.png to 1.png. (Python)
+X7. If there are other files, move each one to n+1.png. (Python)
+X8. If there are any greater > 10, delete them. (Python)
+X9. Return via Flask the images/timestamp/timestamp.1.png file name for
+display. (JS--via jsonify)
+
+This will allow me to complete ST1, LT2! (it immediately completes LT2!!! )
+
 Short-Term
 ----------
 1. Allow users to look at previously generated images
@@ -17,7 +32,7 @@ up)
 
 SUPER Long-Term
 ---------------
-2. Dump data into SQL server and manipulate it that way (this necessitates
+1. Dump data into SQL server and manipulate it that way (this necessitates
 rewriting some of the processing code, since it is designed to operate on JSON
 files, and while most isn't specifically dependent on JSON files (using jsonify
 could work), there are some wrinkles involved)

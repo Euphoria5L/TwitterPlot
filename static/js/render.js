@@ -29,6 +29,14 @@ function hideoptions() {
 }
 
 $(document).ready(function() {
+    if (localStorage.getItem('userid') === null) {
+        timestamp = new Date().getTime();
+        localStorage.setItem('userid', timestamp);
+        userid = localStorage.getItem('userid');
+    } else {
+        userid = localStorage.getItem('userid');
+    }
+
     $('#interval_div').hide();
     $('#total_div').hide();
     $('#start_div').hide();
@@ -45,12 +53,12 @@ $(document).ready(function() {
                 alert('Must be interval between 1 minute and 60 minutes!');
                 return;
             }
+        }
 
-            if (Number($('#interval').val()) < 1 ||
-                Number($('#interval').val()) > 60) {
-                    alert('Must be interval between 1 minute and 60 minutes!');
-                    return;
-            }
+        if (Number($('#interval').val()) < 1 ||
+            Number($('#interval').val()) > 60) {
+                alert('Must be interval between 1 minute and 60 minutes!');
+                return;
         }
 
         if ($('#search').val().length === 0) {
@@ -78,17 +86,14 @@ $(document).ready(function() {
         plottotal: $('#plottotal').is(':checked'),
         interval: $('#interval').val(),
         start_time: $('#start_time').val(),
-        end_time: $('#end_time').val()});
-
-        // for refreshing image; we remove src, then add it on a delay
-        // the delay is required so that the image isn't replaced before
-        // the image is actually newly generated
-        setTimeout(function () {
-            $('#graph').removeAttr('src');
-            $('#graph').attr('src', 'static/image.png?timestamp=' + new Date().getTime());
-        }, 3000);
+        end_time: $('#end_time').val(),
+        userid: userid}).done(function(data) {
+            setTimeout(function () {
+                $('#graph').removeAttr('src');
+                $('#graph').attr('src', data.image_url + '?timestamp=' + new Date().getTime());
+            }, 3000);
+        });
     });
-
     $('#help-dialog').dialog({
         resizable: false,
         autoOpen: false,
@@ -102,4 +107,5 @@ $(document).ready(function() {
     $('#help').click(function() {
         $('#help-dialog').dialog('open');
     });
+
 });
