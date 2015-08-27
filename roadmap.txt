@@ -1,19 +1,23 @@
 PLAN FOR FUTURE WORK
 
-X1. Assign users a timestamp-based id, stored in localstorage (via Javascript)
-X2. If the user doesn't have a timestamp id, display a placeholder image (JS)
-X3. pass this ID through to flask (JS->Python)
-X4. If this is the first time the ID is passed through, create an
-images/timestamp folder (Python)
-X5. Pass through the image.png name and save it to images/timestamp (Python)
-X6. Check the contents of images/timestamp. If there is nothing there, move
-image.png to 1.png. (Python)
-X7. If there are other files, move each one to n+1.png. (Python)
-X8. If there are any greater > 10, delete them. (Python)
-X9. Return via Flask the images/timestamp/timestamp.1.png file name for
-display. (JS--via jsonify)
+ST1 PLAN!
 
-This will allow me to complete ST1, LT2! (it immediately completes LT2!!! )
+1. Add forward/backwards buttons to HTML
+2. Grey out forward button if on 1.png, and back if on the highest #.png
+3. Let Flask send the number of images over! This way we can configure it there,
+rather than have to keep changing stuff (in return jsonify...)
+
+ST2 PLAN!
+
+1. Gather some data (BYU @ Huskers, following #Huskers, and #MNF)
+2. Add dropdown on left-most column for selecting file.
+3. Add small description of the data that's loaded with each file switch into
+that column.
+
+ST3 PLAN!
+
+1. Stuff dictionary into CSV file (in the images/userid folder)
+2. Show download link when this is done.
 
 Short-Term
 ----------
@@ -26,9 +30,6 @@ Long-Term
 1. Allow gathering of tweet data on the server (NOTE: don't deploy this to AWS!
 it is time-consuming and can compromise the usability of the app! It should just
 be a proof of concept!)
-2. Allow multiple users (note: the current setup should easily allow multiple
-users, but the image delivery code would need to be rewritten from the ground
-up)
 
 SUPER Long-Term
 ---------------

@@ -1,6 +1,8 @@
 # TwitterPlot
 A small flask app to produce charts from twitter data. If you have a JSON file from Twitter (these can be gathered with the streaming API; I like the Tweepy library for Python), you can search through it and produce plots reasonably quickly.
 
+Images are stored in static/images/userid, where userid is set via Javascript on ready. The userid is just the timestamp on first load, and it lives in localstorage. The software stores the last 10 images; this can be changed reasonably easily in twitterplot.py.
+
 ## Running Locally
 To run locally, simply run
 
@@ -8,7 +10,7 @@ To run locally, simply run
 python twitterplot.py
 ```
 
-and access it via 
+and access it via
 
 ```
 http://localhost:5000
@@ -28,7 +30,7 @@ This object is then passed into the interface function.
 
 ## The Parameters
 
-#### Interval 
+#### Interval
 ```python
 interval = 15
 ```
@@ -65,7 +67,7 @@ filename = ''
 This is the source data. It's up to you to make sure the file exists (I check elsewhere).
 
 #### Plot Type
-Plot type is handled via a method to add it, plot_typehandle(_plot_type). It takes a string. There are four options for plots.
+Plot type is handled via a method to add it, plot\_typehandle(\_plot\_type). It takes a string. There are four options for plots.
 
 1. 'bar_plot' : a bar plot of the data.
 2. 'pie_plot' : a pie plot of the data.
@@ -75,14 +77,13 @@ Plot type is handled via a method to add it, plot_typehandle(_plot_type). It tak
 It raises a ValueError if you don't pass one of these in.
 
 #### Image Destination
-WARNING: ALMOST ENTIRELY UNTESTED CODE!
 
-Lets you set the destination of the image. It should be safe, but since the program creates the PNG, it will throw an error if you don't have write permissions. Use the image_destination(image_dest) function, which does some safe things with OS paths. I've tested it on Windows and Ubuntu, when running from the home directory, with 'image.png' and it works.
+Lets you set the destination of the image. It should be safe, but since the program creates the PNG, it will throw an error if you don't have write permissions. Use the image_destination(image_dest) function, which does some safe things with OS paths. It assumes it will right to a subdirectory and is written with this behavior in mind.
 
 ## The Interface Function
 
 If you've done everything right with the Parameters instance, you can pass to the interface function the instance, like so
 ```python
 tweet_plot.interface(plot_params)
-``` 
+```
 and it should take care of the rest. It will output the file silently to your image_dest, so be sure it's set properly. You can mess with the individual functions if you want. The search data being tossed around is almost entirely dictionaries. It is easy to turn it into a CSV file, so that's an easy application for the search functions.

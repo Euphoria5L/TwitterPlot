@@ -12,7 +12,9 @@
     <div class="container">
     <div class="row">
     <div class="col-md-2">
-    <p>Twitterplot uses data from Twitter. The current data set is from the Republican debate, following several relevant hashtags. Enter search terms separated by spaces and have fun!</p>
+    <p>Twitterplot uses data from Twitter. The current data set is from the
+        Republican debate, following several relevant hashtags. Enter search
+        terms separated by spaces and have fun!</p>
     </div>
     <div class="col-md-2">
     <form class="form" id=plot-data>
@@ -30,8 +32,8 @@
             <dd><textarea id="search" rows=5 columns=40></textarea>
             <dt><div id="interval_div">Interval: <input type=number size="3"
                  id=interval name="interval" value="15" maxlength="2"></div>
-            <dt><div id="total_div">Total? <input type=checkbox id=plottotal></div>
-                <!--<input type="hidden" id=plottotal value=nototal>-->
+            <dt><div id="total_div">Total? <input type=checkbox
+                id=plottotal></div>
             <dt><div id="start_div">Start Time: <input type=text size=3
                  id=start_time></div>
             <dt><div id="end_div">End Time: <input type=text size=3
@@ -59,9 +61,10 @@
         <h4>Caveats</h4>
         <p>The demo version you're using has some limitations</p>
         <ul>
-            <li>Time Plots can plot a maximum of FIVE terms.</li>
+            <li>Time Plots can plot a maximum of FIVE terms (this is because of
+                the color list I use in matplotlib).</li>
             <li>The start/end time fields take '00:00' formatted times, which
-                are hours:minutes from the beginning of the data set. The data set starts at approximately 23:50 UTC and ends around 2:55 UTC.</li>
+                are hours:minutes from the beginning of the data set. This data set is approximately three hours worth of data (but it doesn't matter if you overshoot the end)</li>
             <li>The data set is from the first Republican debate following a few
                 related hashtags. So use those search terms! You might not get
                 much for 'python' but you will get a lot for 'trump'</li>

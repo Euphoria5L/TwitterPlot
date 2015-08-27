@@ -4,6 +4,7 @@ import os
 
 twitterplot = Flask(__name__)
 # twitterplot.debug = True
+# For the love of all that is holy, keep debug off unless you want disaster
 
 
 @twitterplot.route('/')
@@ -39,27 +40,36 @@ def plot_data():
     plot_params.end_time = request.args.get('end_time')
     plot_params.filename = filename
 
+    # we use this code to deal with images indexed for a userid
+    # most of it is platform-independent
+    # it checks if the userid directory exists
     userid = str(request.args.get('userid'))
     user_images = os.path.join(SITE_ROOT, 'static', 'images', userid)
     if os.path.exists(user_images):
         plot_params.image_destination(os.path.join(user_images, 'image.png'))
     else:
         os.mkdir(user_images)
+        plot_params.image_destination(os.path.join(user_images, 'image.png'))
 
     tweet_plot.interface(plot_params)
     print(os.path.join(user_images, str(1) + '.png'))
 
     # the following is kind of ugly! It could be prettified a bit
+    # it is coded for 10, but can be changed
     if os.path.exists(os.path.join(user_images, '1.png')):
         for i in range(10, 0, -1):
-            if i == 10 and os.path.exists(os.path.join(user_images, '10.png')):
+            if i == 10 and os.path.exists(os.path.join(user_images,
+                                          str(i) + '.png')):
                 os.remove(os.path.join(user_images, '10.png'))
+
             elif os.path.exists(os.path.join(user_images, str(i) + '.png')):
                 os.rename(os.path.join(user_images, str(i) + '.png'),
                           os.path.join(user_images, str(i + 1) + '.png'))
     os.rename(os.path.join(user_images, 'image.png'),
               os.path.join(user_images, '1.png'))
 
+    # necessary for it to work! Browsers expect a browsable URL, so the path
+    # must be relative to the root of the web server.
     return jsonify({'image_url': str('static/images/' + userid + '/1.png')})
 
 

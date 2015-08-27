@@ -29,6 +29,7 @@ function hideoptions() {
 }
 
 $(document).ready(function() {
+    // creating a userid
     if (localStorage.getItem('userid') === null) {
         timestamp = new Date().getTime();
         localStorage.setItem('userid', timestamp);
@@ -36,6 +37,11 @@ $(document).ready(function() {
     } else {
         userid = localStorage.getItem('userid');
     }
+
+    $.get('static/' + userid + '/1.png').fail(function() {
+            $('#graph').removeAttr('src');
+            $('#graph').setAttr('static/' + userid + '/1.png');
+        });
 
     $('#interval_div').hide();
     $('#total_div').hide();
