@@ -26,7 +26,7 @@ class Parameters:
         self.plot_total = False
         self.filename = ''
 
-        # the DEFAULT output--this is for the web app!
+        # the DEFAULT output
         SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
         self.image_dest = os.path.join(SITE_ROOT, 'static', 'image.png')
 
@@ -64,8 +64,7 @@ class Parameters:
 
     def image_destination(self, image_dest):
         """
-        Set the image destination. The default is for the web app. BE AWARE
-        THIS IS BARELY TESTED CODE AND DOES NOT CATCH ERRORS.
+        Set the image destination. The default is set above.
         """
         SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
         self.image_dest = os.path.join(SITE_ROOT, image_dest)

@@ -54,8 +54,9 @@ def plot_data():
     tweet_plot.interface(plot_params)
     print(os.path.join(user_images, str(1) + '.png'))
 
-    # the following is kind of ugly! It could be prettified a bit
-    # it is coded for 10, but can be changed
+    # the following is kind of ugly, but it's platform-independent
+    # the number of images saved can be adjusted, but I've just hard-coded it
+    # to 10 for the sake of simplicity.
     if os.path.exists(os.path.join(user_images, '1.png')):
         for i in range(10, 0, -1):
             if i == 10 and os.path.exists(os.path.join(user_images,
@@ -65,6 +66,7 @@ def plot_data():
             elif os.path.exists(os.path.join(user_images, str(i) + '.png')):
                 os.rename(os.path.join(user_images, str(i) + '.png'),
                           os.path.join(user_images, str(i + 1) + '.png'))
+
     os.rename(os.path.join(user_images, 'image.png'),
               os.path.join(user_images, '1.png'))
 
@@ -77,10 +79,10 @@ def plot_data():
 def add_header(response):
     """
     Old function for making sure new images loaded when /plot was POSTed to
-    by sending an HTML header giving a max cache age. Since the
+    by sending an HTML header giving a max cache age of 0. Since the
     current version uses JQuery to do things, this largely serves to make sure
     the HTML, JS, and CSS files load whenever changed. It should probably be
-    removed on a prodution server.
+    removed on a prodution server, but it doesn't change much.
     """
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'

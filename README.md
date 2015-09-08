@@ -77,7 +77,6 @@ Plot type is handled via a method to add it, plot\_typehandle(\_plot\_type). It 
 It raises a ValueError if you don't pass one of these in.
 
 #### Image Destination
-
 Lets you set the destination of the image. It should be safe, but since the program creates the PNG, it will throw an error if you don't have write permissions. Use the image_destination(image_dest) function, which does some safe things with OS paths. It assumes it will right to a subdirectory and is written with this behavior in mind.
 
 ## The Interface Function
