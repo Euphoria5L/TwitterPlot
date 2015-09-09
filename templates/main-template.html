@@ -6,6 +6,9 @@
     <link href="{{ url_for('static', filename='js/jquery-ui.theme.min.css') }}"
     rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+    <script>
+    var image_url = '{{ image_url }}';
+    </script>
 </head>
 <body>
     <h1 class="text-center">Twitterplot</h1>
@@ -62,13 +65,12 @@
         <p>The demo version you're using has some limitations</p>
         <ul>
             <li>Time Plots can plot a maximum of FIVE terms (this is because of
-                the color list I use in matplotlib).</li>
+                the color list in matplotlib).</li>
             <li>The start/end time fields take '00:00' formatted times, which
-                are hours:minutes from the beginning of the data set. This data set is approximately three hours worth of data (but it doesn't matter if you overshoot the end)</li>
-            <li>The data set is from the first Republican debate following a few
-                related hashtags. So use those search terms! You might not get
-                much for 'python' but you will get a lot for 'trump'</li>
-            <li>You will notice that the data drops around 3:00AM. This is
+                are hours:minutes from the beginning of the data set. It doesn't matter if you overshoot the end.</li>
+            <li>Look at the data set descriptions! They give relevant search
+                terms.</li>
+            <li>You will notice that the data drops around at the end. This is
                 unavoidable with the way the data is displayed (this is a design
                 decision--data is not being lost).</li>
             <li>If you have any questions about the software, don't hesitate to
@@ -79,9 +81,14 @@
     </div>
     <div id="help">Help!</div>
     </div>
-          <div class="col-md-8">
-            <p><img src="static/twitterplot.jpg" id="graph"></p>
+        <div class="col-md-8">
+            <p><img src="" id="graph"></p>
+            <div class="text-center">
+                <p><button class="btn btn-default"
+                    id="previous-img">Previous</button>
+                <button class="btn btn-default" id="next-img">Next</button></p>
             </div>
+        </div>
     </div>
 
     <script src="{{ url_for('static', filename='js/jquery-1.11.2.min.js')}}"></script>

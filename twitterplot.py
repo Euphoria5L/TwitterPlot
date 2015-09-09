@@ -3,15 +3,18 @@ import tweet_plot
 import os
 
 twitterplot = Flask(__name__)
+IMAGE_URL = 'static/images/'
 # twitterplot.debug = True
 # For the love of all that is holy, keep debug off unless you want disaster
 
 
 @twitterplot.route('/')
 def home():
-    return render_template('main-template.html')
+
+    return render_template('main-template.html', image_url=IMAGE_URL)
 
 
+# here is the little REST API
 @twitterplot.route('/plot', methods=['POST', 'GET'])
 def plot_data():
     """
@@ -19,6 +22,9 @@ def plot_data():
     plotting function, which generates a new image for JQuery to reload.
     """
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+
+    # here goes code to take the 'data_list' argument from the incoming JSON
+
     filename = os.path.join(SITE_ROOT, 'testdata.json')
     plot_params = tweet_plot.Parameters()
 
@@ -44,7 +50,7 @@ def plot_data():
     # most of it is platform-independent
     # it checks if the userid directory exists
     userid = str(request.args.get('userid'))
-    user_images = os.path.join(SITE_ROOT, 'static', 'images', userid)
+    user_images = os.path.join(SITE_ROOT, IMAGE_URL, userid)
     if os.path.exists(user_images):
         plot_params.image_destination(os.path.join(user_images, 'image.png'))
     else:
@@ -72,7 +78,7 @@ def plot_data():
 
     # necessary for it to work! Browsers expect a browsable URL, so the path
     # must be relative to the root of the web server.
-    return jsonify({'image_url': str('static/images/' + userid + '/1.png')})
+    return jsonify({'image_url': str(IMAGE_URL + userid + '/')})
 
 
 @twitterplot.after_request

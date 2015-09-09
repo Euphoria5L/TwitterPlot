@@ -38,10 +38,13 @@ $(document).ready(function() {
         userid = localStorage.getItem('userid');
     }
 
-    $.get('static/' + userid + '/1.png').fail(function() {
+    $('#graph').attr('src', image_url + userid +
+        '/1.png').error(function() {
             $('#graph').removeAttr('src');
-            $('#graph').setAttr('static/' + userid + '/1.png');
+            $('#graph').attr('src', image_url + 'twitterplot.jpg');
         });
+
+    var current_image = 1;
 
     $('#interval_div').hide();
     $('#total_div').hide();
@@ -96,8 +99,9 @@ $(document).ready(function() {
         userid: userid}).done(function(data) {
             setTimeout(function () {
                 $('#graph').removeAttr('src');
-                $('#graph').attr('src', data.image_url + '?timestamp=' + new Date().getTime());
-            }, 3000);
+                $('#graph').attr('src', data.image_url + '1.png' + '?timestamp=' + new Date().getTime());
+                current_image = 1;
+            }, 100);
         });
     });
     $('#help-dialog').dialog({
@@ -112,6 +116,41 @@ $(document).ready(function() {
 
     $('#help').click(function() {
         $('#help-dialog').dialog('open');
+    });
+
+    /* The code below is a little strange. TwitterPlot saves the files with the
+    most recent one as 1.png, and increments any other image files up by 1 until
+    10.png, which is always overwritten; there are a max of 10 image files kept
+    at a time per userid (basically, per browser). So this code counts
+    backwards; previous-img increments the counter, and next-image decrements
+    it.
+    */
+
+    $('#previous-img').click(function() {
+        if (current_image === 10) {
+            return;
+        }
+        else {
+            current_image++;
+            $.ajax({
+                url: image_url + userid + '/' + current_image + '.png',
+                type: "HEAD",
+                error: function () { current_image--; },
+                success: function () {
+                    $('#graph').attr('src', image_url + userid + '/' +  current_image + '.png');
+                }
+            })
+        }
+    });
+
+    $('#next-img').click(function() {
+        if (current_image === 1) {
+            return;
+        }
+        else {
+            current_image--;
+            $('#graph').attr('src', image_url + userid + '/'+  current_image + '.png');
+        }
     });
 
 });
