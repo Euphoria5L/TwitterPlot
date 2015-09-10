@@ -6,6 +6,7 @@ import numpy
 import datetime
 import json
 import os
+from pytz import timezone
 from collections import OrderedDict
 
 
@@ -191,7 +192,8 @@ def time_lineplot(search_list, time_dictionary, image_dest, interval=15,
         plt.plot_date(x_axis, y_axis, 'b-')
 
         ax = plt.gca()
-        ax.xaxis.set_major_formatter(mdate.DateFormatter('%I:%M %p'))
+        ax.xaxis.set_major_formatter(mdate.DateFormatter('%I:%M %p',
+                                     tz=timezone('US/Central')))
         plt.gcf().autofmt_xdate()
 
         plt.savefig(image_dest)
@@ -214,7 +216,8 @@ def time_lineplot(search_list, time_dictionary, image_dest, interval=15,
             plt.plot_date(x_axis, y_axis, colors[search_list.index(term)])
 
         ax = plt.gca()
-        ax.xaxis.set_major_formatter(mdate.DateFormatter('%I:%M %p'))
+        ax.xaxis.set_major_formatter(mdate.DateFormatter('%I:%M %p',
+                                     tz=timezone('US/Central')))
         plt.gcf().autofmt_xdate()
         plt.legend(search_list, loc='upper center',
                    bbox_to_anchor=(0.5, -0.15),

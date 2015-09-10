@@ -3,15 +3,37 @@ import tweet_plot
 import os
 
 twitterplot = Flask(__name__)
+
+# globals
 IMAGE_URL = 'static/images/'
+
 # twitterplot.debug = True
 # For the love of all that is holy, keep debug off unless you want disaster
 
 
+def datafiles():
+    """
+    Set up your data files here. Just add more instances of the JSONFiles()
+    class. Data files go in the root. What happens is that on GET, this is
+    called to generate the list for Flask to render the template, and when the
+    AJAX request gets made, it grabs the file value from the HTML; this is a
+    convenient and cheap method.
+    """
+    debate_data = JsonFile('testdata.json', 'Republican Debate')
+    husker_data = JsonFile('huskers0.json', 'BYU @ Huskers')
+
+    files = [debate_data, husker_data]
+
+    return files
+
+
 @twitterplot.route('/')
 def home():
-
-    return render_template('main-template.html', image_url=IMAGE_URL)
+    files = datafiles()
+    return render_template(
+        'main-template.html',
+        image_url=IMAGE_URL,
+        files=files)
 
 
 # here is the little REST API
@@ -21,11 +43,13 @@ def plot_data():
     We grab the data from JQuery and pass it to the
     plotting function, which generates a new image for JQuery to reload.
     """
+
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-    # here goes code to take the 'data_list' argument from the incoming JSON
+    data_file = request.args.get('data_file')
 
-    filename = os.path.join(SITE_ROOT, 'testdata.json')
+    filename = os.path.join(SITE_ROOT, data_file)
+
     plot_params = tweet_plot.Parameters()
 
     plot_params.plot_typehandle(request.args.get('plot_type'))
@@ -93,6 +117,20 @@ def add_header(response):
     response.headers['X-UA-Compatible'] = 'IE=Edge,chrome=1'
     response.headers['Cache-Control'] = 'public, max-age=0'
     return response
+
+
+class JsonFile():
+    def __init__(self, filename, displaytext):
+        try:
+            os.path.isfile(filename)
+            pass
+        except IOError as e:
+            raise e
+            return
+
+        self.name = filename
+        self.text = displaytext
+
 
 if __name__ == '__main__':
     # DO NOT EVER RUN THIS AS A MAIN APP ON A SERVER. EVEN COMMENT OUT THE
