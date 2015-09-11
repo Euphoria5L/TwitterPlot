@@ -1,7 +1,18 @@
 # TwitterPlot
 A small flask app to produce charts from twitter data. If you have a JSON file from Twitter (these can be gathered with the streaming API; I like the Tweepy library for Python), you can search through it and produce plots reasonably quickly.
 
-Images are stored in static/images/userid, where userid is set via Javascript on ready. The userid is just the timestamp on first load, and it lives in localstorage. The software stores the last 10 images; this can be changed reasonably easily in twitterplot.py.
+Images are stored in static/images/userid, where userid is set via Javascript on ready. The userid is just the timestamp on first load, and it lives in localstorage. The software stores the last 10 images for a user, identified via a unique ID stored in browser storage. The number of images can be changed reasonably easily in twitterplot.py and render.js; extending and simplifying that functionality is coming later.
+
+## Using Multiple Files
+
+You can use multiple files. Presently this is configured at the top of twitterplot.py in the function datafiles(), which returns the appropriate list. 
+
+```
+debate_data = JsonFile('filename', 'display name')
+```
+The filename attribute is just the file name, and the display name is the name that appears in the 
+selection box. Twitterplot expects data to be in the root; this can be changed, but it should be changed elsewhere in the
+app.
 
 ## Running Locally
 To run locally, simply run
