@@ -1,28 +1,7 @@
 PLAN FOR FUTURE WORK
 
-ST1 PLAN!
-
-1. Add forward/backwards buttons to HTML
-2. Grey out forward button if on 1.png, and back if on the highest #.png
-3. Let Flask send the number of images over! This way we can configure it there,
-rather than have to keep changing stuff (in return jsonify...)
-
-ST2 PLAN!
-
-1. Gather some data (BYU @ Huskers, following #Huskers, and #MNF)
-2. Add dropdown on left-most column for selecting file.
-3. Add small description of the data that's loaded with each file switch into
-that column.
-
-ST3 PLAN!
-
-1. Stuff dictionary into CSV file (in the images/userid folder)
-2. Show download link when this is done.
-
 Short-Term
 ----------
-1. Allow users to look at previously generated images
-2. Allow multiple JSON files
 3. CSV downloads of data files
 
 Long-Term
@@ -30,10 +9,5 @@ Long-Term
 1. Allow gathering of tweet data on the server (NOTE: don't deploy this to AWS!
 it is time-consuming and can compromise the usability of the app! It should just
 be a proof of concept!)
-
-SUPER Long-Term
----------------
-1. Dump data into SQL server and manipulate it that way (this necessitates
-rewriting some of the processing code, since it is designed to operate on JSON
-files, and while most isn't specifically dependent on JSON files (using jsonify
-could work), there are some wrinkles involved)
+2. Dump data into SQL server (actually, Mongo is probably a bit easier and might not necessitate changing the code too much, 
+just adding code to make handling the document collections look like handling files; cursor? This requires experimentation).
